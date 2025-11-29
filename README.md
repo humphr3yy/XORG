@@ -5,6 +5,13 @@ This game is completely free to remake, demake, remix, or port to any system,
 as long as it's non-profit and you credit Humphr3yy or Kaiden Kricak as the
 original creator.
 
+## Lore
+In the distant future, the galaxy is under the iron grip of the Red Authority, a shadow government enforcing order with ruthless precision. To maintain their control, they created the Xorgs: sentient, glowing law-enforcement orbs capable of hunting and vaporizing any life deemed insubordinate.
+
+But hope remains. In the year 314183, the Resistance captured a prototype Xorg and duplicated it, creating their own fleet of liberated orbs. These Blue Xorgs now roam the cosmic arenas, freeing worlds from authoritarian oppression.
+
+As a pilot of a Resistance Xorg, your mission is simple: outmaneuver the Red Xorgs, survive the deadly arena, and ensure the galaxy remembers the courage of those who refused to bow. Every hit counts, every maneuver matters, and only the last orb standing can claim victory.
+
 ## Project Structure
 
 - **`src/`**: Core Game Engine (TypeScript/HTML5). The primary version.
