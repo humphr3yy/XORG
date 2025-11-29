@@ -10,7 +10,7 @@ In the distant future, the galaxy is under the iron grip of the Red Authority, a
 
 But hope remains. In the year 314183, the Resistance captured a prototype Xorg and duplicated it, creating their own fleet of liberated orbs. These Blue Xorgs now roam the cosmic arenas, freeing worlds from authoritarian oppression.
 
-As a pilot of a Resistance Xorg, your mission is simple: outmaneuver the Red Xorgs, survive the deadly arena, and ensure the galaxy remembers the courage of those who refused to bow. Every hit counts, every maneuver matters, and only the last orb standing can claim victory.
+As a pilot of an Authority Xorg, your mission is simple: outmaneuver the Blue Xorgs, survive the deadly arena, and ensure the Galaxy remembers that no being shall, denounce the Red's reign and run away in one piece. Every hit counts, every maneuver matters, and only the last orb standing can claim victory.
 
 ## Project Structure
 
