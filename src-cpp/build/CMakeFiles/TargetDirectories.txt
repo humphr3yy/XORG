@@ -1,0 +1,3 @@
+/home/kaiden/xorg/src-cpp/build/CMakeFiles/xorg.dir
+/home/kaiden/xorg/src-cpp/build/CMakeFiles/edit_cache.dir
+/home/kaiden/xorg/src-cpp/build/CMakeFiles/rebuild_cache.dir

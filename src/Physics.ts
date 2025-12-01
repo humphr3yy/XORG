@@ -53,7 +53,14 @@ export class Physics {
     checkWallCollision(entity: Entity) {
         const dist = Math.sqrt(entity.position.x ** 2 + entity.position.y ** 2);
         if (dist + entity.radius > this.game.arenaRadius) {
-            // Check Sudden Death
+            // Check Tiebreaker Mode
+            if (this.game.isTiebreaker && entity instanceof Player) {
+                // Player touched wall in tiebreaker - they lose!
+                this.game.endTiebreaker(entity);
+                return;
+            }
+
+            // Check Sudden Death (legacy)
             if (this.game.isSuddenDeath && entity instanceof Player) {
                 entity.hp = 0;
                 return;

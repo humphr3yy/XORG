@@ -1,20 +1,28 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
+import { app, BrowserWindow } from 'electron';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1280,
+        height: 720,
+        fullscreen: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
         }
     });
 
-    // In dev, load vite server. In prod, load index.html
-    // For this deliverable, we assume a built index.html or dev server
-    // win.loadURL('http://localhost:5173'); 
-    win.loadFile('index.html');
+    // Load the production build from dist folder
+    const startUrl = path.join(__dirname, 'dist', 'index.html');
+    win.loadFile(startUrl);
+
+    // Optional: Open DevTools in development
+    // win.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {

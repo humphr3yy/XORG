@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/xorg.dir/main.cpp.o -o xorg  /usr/lib/x86_64-linux-gnu/libSDL2.so 

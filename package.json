@@ -2,17 +2,51 @@
   "name": "xorg",
   "private": true,
   "version": "0.0.0",
+  "description": "A minimalist 2D arena dueling game",
+  "author": "XORG Team",
+  "main": "electron-main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dist": "electron-builder",
+    "deploy": "gh-pages -d dist"
+  },
+  "build": {
+    "appId": "com.xorg.game",
+    "productName": "XORG",
+    "files": [
+      "dist/**/*",
+      "electron-main.js",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist-electron"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "tar.gz"
+      ],
+      "category": "Game",
+      "maintainer": "XORG Team <team@xorg.game>"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^26.0.12",
+    "electron-packager": "^17.1.2",
+    "gh-pages": "^6.3.0",
     "typescript": "~5.9.3",
     "vite": "^7.2.4"
-  },
-  "dependencies": {
-    "electron": "^39.2.3"
   }
 }

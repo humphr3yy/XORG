@@ -5,14 +5,15 @@ export class Renderer {
         this.ctx = ctx;
     }
 
-    drawArena(radius: number, isSuddenDeath: boolean) {
+    drawArena(radius: number, isTiebreaker: boolean) {
         this.ctx.beginPath();
         this.ctx.arc(0, 0, radius, 0, Math.PI * 2);
         this.ctx.lineWidth = 5;
-        if (isSuddenDeath) {
-            this.ctx.strokeStyle = '#ff4400';
+        if (isTiebreaker) {
+            // Orange walls for tiebreaker mode
+            this.ctx.strokeStyle = '#ff8800';
             this.ctx.shadowBlur = 20;
-            this.ctx.shadowColor = '#ff4400';
+            this.ctx.shadowColor = '#ff8800';
         } else {
             this.ctx.strokeStyle = '#fff';
             this.ctx.shadowBlur = 10;
@@ -22,14 +23,21 @@ export class Renderer {
         this.ctx.shadowBlur = 0; // Reset
     }
 
-    drawPlayer(x: number, y: number, radius: number, color: string, angle: number, overheat: number) {
+    drawPlayer(x: number, y: number, radius: number, color: string, angle: number, overheat: number, isWinner: boolean = false, isOverheated: boolean = false) {
         this.ctx.save();
         this.ctx.translate(x, y);
-        this.ctx.rotate(angle);
+        // Fix aiming: Cannon draws pointing DOWN (+Y), but 0 radians is RIGHT (+X).
+        // Rotate -90 degrees (-PI/2) to align visual with math.
+        this.ctx.rotate(angle - Math.PI / 2);
 
-        // Glow
-        this.ctx.shadowBlur = 15;
-        this.ctx.shadowColor = color;
+        // Overheat flash effect
+        if (isOverheated) {
+            this.ctx.shadowBlur = 30;
+            this.ctx.shadowColor = '#ff4400';
+        } else {
+            this.ctx.shadowBlur = 15;
+            this.ctx.shadowColor = color;
+        }
 
         // Body
         this.ctx.beginPath();
@@ -54,6 +62,35 @@ export class Renderer {
         }
 
         this.ctx.restore();
+
+        // Crown for winner - Draw AFTER restore so it doesn't rotate with player
+        // "Always above the circle vertically and horizontally slightly"
+        // "Make it not spin with the ball but still follow the ball"
+        if (isWinner) {
+            // Draw relative to player center (x, y)
+            // Offset y by radius + padding
+            this.drawCrown(x, y - radius - 20);
+        }
+    }
+
+    drawCrown(x: number, y: number) {
+        this.ctx.fillStyle = '#ffd700'; // Gold
+        this.ctx.shadowBlur = 10;
+        this.ctx.shadowColor = '#ffd700';
+
+        // Simple crown shape
+        this.ctx.beginPath();
+        this.ctx.moveTo(x - 10, y + 5);
+        this.ctx.lineTo(x - 7, y - 5);
+        this.ctx.lineTo(x - 4, y + 2);
+        this.ctx.lineTo(x, y - 10);
+        this.ctx.lineTo(x + 4, y + 2);
+        this.ctx.lineTo(x + 7, y - 5);
+        this.ctx.lineTo(x + 10, y + 5);
+        this.ctx.closePath();
+        this.ctx.fill();
+
+        this.ctx.shadowBlur = 0;
     }
 
     drawProjectile(x: number, y: number, angle: number) {
@@ -61,18 +98,14 @@ export class Renderer {
         this.ctx.translate(x, y);
         this.ctx.rotate(angle);
 
-        this.ctx.beginPath();
-        // Thin vertical line "|"
-        this.ctx.moveTo(0, -10);
-        this.ctx.lineTo(0, 10);
-        this.ctx.strokeStyle = '#ff00ff'; // Laser color? Prompt didn't specify, maybe match player?
-        // Wait, "The laser is a thin vertical line shaped like “|”"
-        // Let's make it bright white/yellow
-        this.ctx.strokeStyle = '#fff';
-        this.ctx.lineWidth = 2;
+        // Draw perfect square projectile
+        const size = 8;
+        this.ctx.fillStyle = '#fff';
         this.ctx.shadowBlur = 10;
         this.ctx.shadowColor = '#fff';
-        this.ctx.stroke();
+
+        // Center the square
+        this.ctx.fillRect(-size / 2, -size / 2, size, size);
 
         this.ctx.restore();
     }
