@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="./vite.svg" />
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XORG</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #111;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+    }
+
+    #game-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      display: block;
+      /* Canvas will be sized by JS or CSS to fit, but let's keep it simple */
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    }
+
+    #ui-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .health-bar-container {
+      width: 20px;
+      height: 300px;
+      background: #222;
+      border: 2px solid #444;
+      border-radius: 4px;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+      overflow: hidden;
+    }
+
+    .health-fill {
+      width: 100%;
+      height: 100%;
+      transition: height 0.2s ease-out;
+      position: absolute;
+      bottom: 0;
+    }
+
+    #p1-health .health-fill {
+      background: linear-gradient(to top, black, #ff3333);
+    }
+
+    #p2-health .health-fill {
+      background: linear-gradient(to top, black, #3333ff);
+    }
+
+    #sudden-death-warning,
+    #tiebreaker-warning {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: 0 0 20px currentColor;
+      opacity: 0;
+      transition: opacity 0.5s;
+      text-align: center;
+    }
+
+    #sudden-death-warning {
+      color: #ffaa00;
+    }
+
+    #tiebreaker-warning {
+      color: #ff8800;
+    }
+
+    #timer {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .score-display {
+      position: absolute;
+      top: 70px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    #p1-score-container {
+      left: 30px;
+    }
+
+    #p2-score-container {
+      right: 30px;
+    }
+
+    #menu {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      z-index: 1000;
+    }
+
+    #menu h1 {
+      font-size: 5rem;
+      margin: 0;
+      color: #fff;
+      text-shadow: 0 0 20px #0ff;
+    }
+
+    #menu .button-container {
+      display: flex;
+      gap: 30px;
+    }
+
+    #menu button {
+      padding: 20px 60px;
+      font-size: 2rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    #menu button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    #menu button:active {
+      transform: translateY(-2px);
+    }
+
+    .game-length-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .game-length-selector h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #aaa;
+    }
+
+    .length-options {
+      display: flex;
+      gap: 20px;
+    }
+
+    .length-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .length-option input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .length-option label {
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .input-method-selector {
+      display: flex;
+      /* Always visible for both 1P and 2P */
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .input-method-selector h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #aaa;
+    }
+
+    .input-options {
+      display: flex;
+      gap: 20px;
+    }
+
+    .input-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-option input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .input-option label {
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .player-note {
+      font-size: 1rem;
+      color: #888;
+      font-style: italic;
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-aqRb0NTs.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BmeGit54.css">
+</head>
+
+<body>
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+    <div id="ui-layer">
+      <div id="p1-health" class="health-bar-container">
+        <div class="health-fill" style="height: 100%"></div>
+      </div>
+      <div id="p1-score-container" class="score-display">
+        P1: <span id="p1-score">0</span>
+      </div>
+      <div id="timer">00:00</div>
+      <div id="p2-score-container" class="score-display">
+        P2: <span id="p2-score">0</span>
+      </div>
+      <div id="p2-health" class="health-bar-container">
+        <div class="health-fill" style="height: 100%"></div>
+      </div>
+    </div>
+    <div id="sudden-death-warning">SUDDEN DEATH</div>
+    <div id="tiebreaker-warning">TIEBREAKER<br />DON'T TOUCH THE WALLS!</div>
+    <div id="menu">
+      <h1>XORG</h1>
+      <div class="game-length-selector">
+        <h3>Game Length</h3>
+        <div class="length-options">
+          <div class="length-option">
+            <input type="radio" id="length-3" name="game-length" value="180" />
+            <label for="length-3">3 min</label>
+          </div>
+          <div class="length-option">
+            <input type="radio" id="length-5" name="game-length" value="300" checked />
+            <label for="length-5">5 min</label>
+          </div>
+          <div class="length-option">
+            <input type="radio" id="length-10" name="game-length" value="600" />
+            <label for="length-10">10 min</label>
+          </div>
+        </div>
+      </div>
+      <div id="input-method-selector" class="input-method-selector">
+        <h3>Player 1 Input</h3>
+        <div class="input-options">
+          <div class="input-option">
+            <input type="radio" id="input-keyboard" name="p1-input" value="keyboard-mouse" checked />
+            <label for="input-keyboard">Keyboard + Mouse</label>
+          </div>
+          <div class="input-option">
+            <input type="radio" id="input-controller" name="p1-input" value="controller" />
+            <label for="input-controller">Controller</label>
+          </div>
+        </div>
+        <p class="player-note">Player 2: Controller Required</p>
+      </div>
+      <div class="button-container">
+        <button id="btn-1p">1 PLAYER</button>
+        <button id="btn-2p">2 PLAYERS</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
