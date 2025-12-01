@@ -4,3 +4,6 @@ dist-electron
 dist-linux
 .DS_Store
 .env
+venv
+src-python/venv
+
