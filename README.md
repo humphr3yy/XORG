@@ -2,7 +2,7 @@
 
 **XORG** is a minimalist 2D arena dueling game inspired by Pong and Jezzball.
 This game is completely free to remake, demake, remix, or port to any system,
-as long as it's non-profit and you credit Humphr3yy or Kaiden Kricak as the
+as long as it's non-profit and you credit krezak or Kaiden Kricak as the
 original creator.
 
 ## Lore
